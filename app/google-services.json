@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "184145991609",
+    "firebase_url": "https://ml-demo-60134.firebaseio.com",
+    "project_id": "ml-demo-60134",
+    "storage_bucket": "ml-demo-60134.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184145991609:android:db2996c1d1733995",
+        "android_client_info": {
+          "package_name": "io.bkraszewski.machinelearningdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "184145991609-okr71vurclbk4v7l0csco4pk6pbjn3pg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2c-IKU-glKq3DrgP_2qhskNKnVF38rto"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
