@@ -7,26 +7,25 @@ public class ColorConverter {
         float[] ret = new float[argbPixels.length];
         for (int i = 0; i < argbPixels.length; i++) {
             int aargbPixel = argbPixels[i];
-            int a = (aargbPixel >> 24) & 0xff;
+            int alpha = (aargbPixel >> 24) & 0xff;
             int r = (aargbPixel >> 16) & 0xff;
             int g = (aargbPixel >> 8) & 0xff;
             int b = aargbPixel & 0xff;
 
-            if (a == 0) {
+            if (alpha == 0) {
                 ret[i] = 0.0f;
                 continue;
             }
 
             int avg = (r + g + b) / 3;
-            invertValue(ret, i, avg);
+
+            float grayscaled = avg / 255.0f;
+            grayscaled = grayscaled * (alpha / 255.0f);
+
+            ret[i] = 1.0f - grayscaled;
         }
 
         return ret;
-    }
-
-    private static void invertValue(float[] ret, int i, int avg) {
-        float temporary = (avg / 255);
-        ret[i] = 1.0f - Math.abs(temporary);
     }
 
     public static int tfToPixel(float retPixel) {

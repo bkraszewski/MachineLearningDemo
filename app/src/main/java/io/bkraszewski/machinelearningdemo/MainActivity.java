@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 
     private void classifyData(float[] retPixels) {
         Classification classification = classifier.recognize(retPixels);
-        String result = String.format("String a %s with conf: %f", classification.getLabel(), classification.getConf());
+        String result = String.format("It's a %s with confidence: %f", classification.getLabel(), classification.getConf());
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
     }
 
@@ -94,8 +94,8 @@ public class MainActivity extends Activity {
     }
 
     private float[] createInputPixels(int[] pixels) {
-        float [] grayscaled = ColorConverter.convertToTfFormat(pixels);
-       return grayscaled;
+        float[] normalized = ColorConverter.convertToTfFormat(pixels);
+        return normalized;
     }
 
     private void switchPreviewVisibility() {
