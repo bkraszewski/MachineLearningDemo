@@ -71,9 +71,9 @@ public class MainActivity extends Activity {
         scaled.getPixels(pixels, 0, width, 0, 0, width, width);
         float[] retPixels = createInputPixels(pixels);
 
-        int[] again = createSecondPreviewPixels(pixels, retPixels);
+        int[] previewPixels = createPixelsPreview(pixels, retPixels);
 
-        Bitmap preview = Bitmap.createBitmap(again, width, width, Bitmap.Config.RGB_565);
+        Bitmap preview = Bitmap.createBitmap(previewPixels, width, width, Bitmap.Config.ARGB_8888);
         bitmapTester.setImageBitmap(preview);
 
         classifyData(retPixels);
@@ -81,26 +81,21 @@ public class MainActivity extends Activity {
 
     private void classifyData(float[] retPixels) {
         Classification classification = classifier.recognize(retPixels);
-        String result = String.format("String a %s with proc: %f", classification.getLabel(), classification.getConf());
+        String result = String.format("String a %s with conf: %f", classification.getLabel(), classification.getConf());
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
     }
 
-    private int[] createSecondPreviewPixels(int[] pixels, float[] retPixels) {
+    private int[] createPixelsPreview(int[] pixels, float[] retPixels) {
         int[] again = new int[pixels.length];
         for (int a = 0; a < pixels.length; a++) {
-            again[a] = (int) retPixels[a];
+            again[a] = ColorConverter.tfToPixel(retPixels[a]);
         }
         return again;
     }
 
     private float[] createInputPixels(int[] pixels) {
-        float[] retPixels = new float[pixels.length];
-
-        for (int i = 0; i < pixels.length; ++i) {
-            int pix = pixels[i];
-            retPixels[i] = pix != 0 ? 255 : 1;
-        }
-        return retPixels;
+        float [] grayscaled = ColorConverter.convertToTfFormat(pixels);
+       return grayscaled;
     }
 
     private void switchPreviewVisibility() {
@@ -115,19 +110,16 @@ public class MainActivity extends Activity {
     }
 
     private void loadModel() {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    classifier = Classifier.create(getApplicationContext().getAssets(),
-                            MODEL_FILE,
-                            LABEL_FILE,
-                            INPUT_SIZE,
-                            INPUT_NAME,
-                            OUTPUT_NAME);
-                } catch (final Exception e) {
-                    throw new RuntimeException("Error initializing TensorFlow!", e);
-                }
+        executor.execute(() -> {
+            try {
+                classifier = Classifier.create(getApplicationContext().getAssets(),
+                        MODEL_FILE,
+                        LABEL_FILE,
+                        INPUT_SIZE,
+                        INPUT_NAME,
+                        OUTPUT_NAME);
+            } catch (final Exception e) {
+                throw new RuntimeException("Error initializing TensorFlow!", e);
             }
         });
     }

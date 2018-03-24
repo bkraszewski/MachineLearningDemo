@@ -30,12 +30,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.google.firebase:firebase-storage:10.2.4'
-    compile 'com.jakewharton:butterknife:8.5.1'
-    compile 'org.tensorflow:tensorflow-android:+'
+    implementation 'com.android.support:appcompat-v7:25.3.0'
+    implementation 'com.google.firebase:firebase-storage:10.2.4'
+    implementation 'com.jakewharton:butterknife:8.5.1'
+    implementation 'org.tensorflow:tensorflow-android:+'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile 'org.tensorflow:tensorflow-android:+'
+    implementation 'org.tensorflow:tensorflow-android:+'
     testCompile 'junit:junit:4.12'
 }
 

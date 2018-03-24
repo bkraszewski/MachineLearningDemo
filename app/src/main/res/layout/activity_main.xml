@@ -45,10 +45,10 @@
 
         <io.bkraszewski.machinelearningdemo.DrawingView
             android:id="@+id/drawingView"
-            android:background="#fff"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:background="#fff" />
 
         <ImageView
             android:id="@+id/bitmapTester"
@@ -56,5 +56,8 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-
+    <TextView
+        android:id="@+id/log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

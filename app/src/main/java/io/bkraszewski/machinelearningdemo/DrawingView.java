@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -12,17 +14,17 @@ import android.view.View;
 
 public class DrawingView extends View {
 
-    private Bitmap mBitmap;
-    private Canvas mCanvas;
-    private Path mPath;
-    private Paint mBitmapPaint;
+    private Bitmap bitmap;
+    private Canvas canvas;
+    private Path path;
+    private Paint bitmapPaint;
     private Paint paint;
 
     public DrawingView(Context c, AttributeSet set) {
         super(c, set);
 
-        mPath = new Path();
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+        path = new Path();
+        bitmapPaint = new Paint(Paint.DITHER_FLAG);
     }
 
     private void setupPaint() {
@@ -42,8 +44,8 @@ public class DrawingView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
     }
 
     @Override
@@ -56,36 +58,36 @@ public class DrawingView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawBitmap(mBitmap, 0, 0, mBitmapPaint);
-        canvas.drawPath(mPath, paint);
+        canvas.drawBitmap(bitmap, 0, 0, bitmapPaint);
+        canvas.drawPath(path, paint);
     }
 
     private float mX, mY;
     private static final float TOUCH_TOLERANCE = 4;
 
-    private void touch_start(float x, float y) {
-        mPath.reset();
-        mPath.moveTo(x, y);
+    private void touchStart(float x, float y) {
+        path.reset();
+        path.moveTo(x, y);
         mX = x;
         mY = y;
     }
 
-    private void touch_move(float x, float y) {
+    private void touchMove(float x, float y) {
         float dx = Math.abs(x - mX);
         float dy = Math.abs(y - mY);
         if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-            mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
+            path.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
             mX = x;
             mY = y;
         }
     }
 
-    private void touch_up() {
-        mPath.lineTo(mX, mY);
+    private void touchUp() {
+        path.lineTo(mX, mY);
         // commit the path to our offscreen
-        mCanvas.drawPath(mPath, paint);
+        canvas.drawPath(path, paint);
         // kill this so we don't double draw
-        mPath.reset();
+        path.reset();
     }
 
     @Override
@@ -95,15 +97,15 @@ public class DrawingView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                touch_start(x, y);
+                touchStart(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
-                touch_move(x, y);
+                touchMove(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                touch_up();
+                touchUp();
                 invalidate();
                 break;
         }
@@ -118,6 +120,6 @@ public class DrawingView extends View {
     }
 
     public Bitmap getBitmap() {
-        return mBitmap;
+        return bitmap;
     }
 }

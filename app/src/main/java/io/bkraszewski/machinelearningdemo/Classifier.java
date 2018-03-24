@@ -1,6 +1,7 @@
 package io.bkraszewski.machinelearningdemo;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 
@@ -19,6 +20,7 @@ public class Classifier {
 
     // Only returns if at least this confidence
     private static final float THRESHOLD = 0.1f;
+    private static final String TAG = "Classifier";
 
     private TensorFlowInferenceInterface tfHelper;
 
@@ -49,46 +51,36 @@ public class Classifier {
                                     int inputSize, String inputName, String outputName)
             throws IOException {
 
-        Classifier c = new Classifier();
+        Classifier classifier = new Classifier();
 
-        c.inputName = inputName;
-        c.outputName = outputName;
+        classifier.inputName = inputName;
+        classifier.outputName = outputName;
 
-        // Read labels
         String labelFile = labelPath.split("file:///android_asset/")[1];
-        c.labels = readLabels(c, assetManager, labelFile);
+        classifier.labels = readLabels(classifier, assetManager, labelFile);
 
-        c.tfHelper = new TensorFlowInferenceInterface(assetManager, modelPath);
+        classifier.tfHelper = new TensorFlowInferenceInterface(assetManager, modelPath);
 
         int numClasses = 10;
 
-        c.inputSize = inputSize;
+        classifier.inputSize = inputSize;
+        classifier.outputNames = new String[]{outputName};
 
-        // Pre-allocate buffer.
-        c.outputNames = new String[]{outputName};
+        classifier.outputName = outputName;
+        classifier.output = new float[numClasses];
 
-        c.outputName = outputName;
-        c.output = new float[numClasses];
-
-        return c;
+        return classifier;
     }
 
     public Classification recognize(final float[] pixels) {
-
-
-        tfHelper.feed(inputName, pixels, 1, inputSize * inputSize);
+        tfHelper.feed(inputName, pixels, new long[]{inputSize * inputSize});
         tfHelper.run(outputNames);
         tfHelper.fetch(outputName, output);
-//        tfHelper.fillNodeFloat(inputName, new int[]{inputSize * inputSize}, pixels);
-//        tfHelper.runInference(outputNames);
-//
-//        tfHelper.readNodeFloat(outputName, output);
 
         // Find the best classification
         Classification ans = new Classification();
         for (int i = 0; i < output.length; ++i) {
-            System.out.println(output[i]);
-            System.out.println(labels.get(i));
+            Log.d(TAG, String.format("Class: %s Conf: %f", labels.get(i), output[i]));
             if (output[i] > THRESHOLD && output[i] > ans.getConf()) {
                 ans.update(output[i], labels.get(i));
             }
